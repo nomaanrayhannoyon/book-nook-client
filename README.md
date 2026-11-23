@@ -5,9 +5,8 @@ with a 7-day due date, and manage the titles they contribute. The client is a
 Next.js 16 App Router application; the API lives in the sibling `book-server/`
 project (Express 5 + MongoDB + JWT).
 
-**Live site:** `https://book-nook-frontend.vercel.app` *(Vercel project
-`book-nook-frontend` — confirm the final URL in your Vercel dashboard and update
-this line if a custom domain or different alias is used.)*
+**Live client:** https://book-nook-frontend-eight.vercel.app
+**Live API:** https://book-server-bice-psi.vercel.app
 
 ## Features
 
