@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { BookOpen, Check, CircleAlert, Image as ImageIcon, Lock, Mail, User } from "lucide-react";
@@ -23,6 +23,8 @@ const criteria = [
 
 export function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const oauthError = searchParams.get("error");
   const { data, isPending } = useSession();
 
   const [name, setName] = useState("");
@@ -32,6 +34,12 @@ export function RegisterForm() {
   const [submitting, setSubmitting] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
   const [googlePending, setGooglePending] = useState(false);
+
+  useEffect(() => {
+    if (oauthError) {
+      toast.error("Google sign-in was cancelled or could not be completed. Please try again.");
+    }
+  }, [oauthError]);
 
   // Already signed in → no need to register
   useEffect(() => {
@@ -98,6 +106,7 @@ export function RegisterForm() {
         provider: "google",
         callbackURL: "/",
         newUserCallbackURL: "/",
+        errorCallbackURL: "/register?error=oauth",
       });
       if (error) {
         toast.error(error.message ?? "Could not start Google sign-in");

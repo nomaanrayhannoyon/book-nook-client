@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { connection } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { signToken } from "@/lib/jwt";
 
 
@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
 
   await connection();
   try {
+    const auth = await getAuth();
     const session = await auth.api.getSession({ headers: request.headers });
     if (!session?.user) {
 

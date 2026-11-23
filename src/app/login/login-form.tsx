@@ -37,6 +37,13 @@ export function LoginForm() {
   const [googlePending, setGooglePending] = useState(false);
 
   const next = safeNext(searchParams.get("next"));
+  const oauthError = searchParams.get("error");
+
+  useEffect(() => {
+    if (oauthError) {
+      toast.error("Google sign-in was cancelled or could not be completed. Please try again.");
+    }
+  }, [oauthError]);
 
   useEffect(() => {
     if (!isPending && data?.user) {
@@ -93,8 +100,7 @@ export function LoginForm() {
 
         callbackURL: next,
         newUserCallbackURL: next,
-
-
+        errorCallbackURL: "/login?error=oauth",
       });
       if (error) {
         toast.error(error.message ?? "Could not start Google sign-in");
