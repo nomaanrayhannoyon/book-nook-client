@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { APIError, betterAuth } from "better-auth";
 import { MongoClient, type Db } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
@@ -7,6 +7,36 @@ function createBetterAuth(client: MongoClient, db: Db, baseURL: string) {
     baseURL,
     trustedOrigins: [baseURL],
     database: mongodbAdapter(db, { client }),
+    // The UI validates this too, but enforce it at the API boundary so direct
+    // requests cannot create weak-password accounts.
+    hooks: {
+      before: async (ctx) => {
+        // Runs for every auth endpoint; only sign-up sends name + email + password.
+        const body = ctx.body as
+          | { name?: unknown; email?: unknown; password?: unknown }
+          | undefined;
+        if (
+          !body ||
+          typeof body.name !== "string" ||
+          typeof body.email !== "string"
+        ) {
+          return;
+        }
+        const password = body.password;
+        if (
+          typeof password !== "string" ||
+          password.length < 6 ||
+          !/[A-Z]/.test(password) ||
+          !/[a-z]/.test(password)
+        ) {
+          throw new APIError("BAD_REQUEST", {
+            message:
+              "Password must be at least 6 characters and contain both uppercase and lowercase letters",
+            code: "PASSWORD_REQUIREMENTS_NOT_MET",
+          });
+        }
+      },
+    },
     emailAndPassword: {
       enabled: true,
       // Assignment requires a 6-character minimum; Better Auth defaults to 8.
