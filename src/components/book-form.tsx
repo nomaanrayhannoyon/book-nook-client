@@ -254,8 +254,8 @@ export function BookForm({
           />
           {file && <p className="text-xs text-[#2b2620]/50 dark:text-white/50">Selected: {file.name}</p>}
           <p className="text-xs text-[#7d7468] dark:text-[#b0a89f]">
-            Optional — file upload needs IMGBB_API_KEY. You can always paste an
-            image URL in the field below.
+            Optional — upload an image file, or paste an image URL in the field
+            below.
           </p>
         </Field>
 
