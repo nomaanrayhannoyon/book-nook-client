@@ -89,9 +89,7 @@ export function BookForm({
     } | null;
     if (!response.ok || !data?.url) {
 
-      throw new Error(
-        data?.error ?? "Image upload failed. Check IMGBB_API_KEY in .env.local.",
-      );
+      throw new Error(data?.error ?? "Image upload failed. Please try again.");
     }
     return data.url;
   }
